@@ -1,0 +1,89 @@
+---
+title: "Options Pricing using Binomial Trees in R"
+author: "Bashir Taiwo"
+date: "10/12/2020"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+\
+\
+
+This report demonstrates how to calculate American and European option prices using R. Two different examples were considered, and the report was generated using R Markdown\
+\
+
+                      
+## Example (European Call Option)\                     
+A stock price is currently $50. Over each of the next two 3-month periods it is expected
+to go up by 6% or down by 5%. The risk-free interest rate is 5% per annum with
+continuous compounding. What is the value of a 6-month European call option with a
+strike price of $51?\
+
+Stock price (s) = $50\
+Time (tt) = 3/12\
+rate (r) = 5%\
+upward movement (up) = 1.06\
+downward movement (dn) = 0.95\
+Strike price (k) = $51\
+
+Now, using binomopt function in R, we can calculate the price of the European call option
+
+```{r}
+library(derivmkts)
+binomopt(s=50,k=51, up=1.06,dn=0.95, r=0.05, tt=0.5, d=0, nstep=2, american=F, putopt=F,crr=F,specifyupdn=T)
+```
+
+The call option price is $1.635071. 
+
+Binomial trees were then plotted using binomplot function in the code below:
+
+```{r}
+
+binomplot(s=50,k=51,v=0,up=1.06,dn=0.95, r=0.05, tt=0.5, d=0, nstep=2, putopt=F, american=F,
+    plotvalues=T, plotarrows=T, drawstrike=TRUE,
+    pointsize=4, ylimval=c(0,0),
+    saveplot = FALSE, saveplotfn='binomialplot.pdf',
+    crr=FALSE, jarrowrudd=FALSE, titles=TRUE, specifyupdn=T, returnprice=FALSE, logy=FALSE)
+
+```
+
+
+In the case of an American put option, the following question was be used to illustrate how to calculate American put option in R
+
+\
+## Example (American Put Option)\
+Suppose  the  current  stock  price  is  $100  with  a  strike  price  of  $110  and  the expiration  date  to  be  2  years.   The  risk  free  rate  is  5%  per  annum  with  continuous compounding.  The stock prices increases by 8% and decreases by 6%.  Use a 4-step tree to value an American put.\
+
+
+Stock price (s) = $100\
+Time (tt) = 24/12\
+rate (r) = 5%\
+upward movement (up) = 1.08\
+downward movement (dn) = 0.94\
+Strike price (k) = $110\
+```{r}
+binomopt(s=100,k=110, up=1.08,dn=0.94, r=0.05, tt=2, d=0, nstep=4, american=T, putopt=T,crr=T,specifyupdn=T)
+```
+
+The put option price is $10. 
+
+Below is a plot of the corresponding binomial trees
+
+```{r}
+binomplot(s=50, k=51,r=0.05, tt=2, v=0, d=0, nstep=4, putopt=T, american=TRUE,
+    plotvalues=T, plotarrows=T, drawstrike=TRUE,
+    pointsize=4, ylimval=c(0,0),
+    saveplot = FALSE, saveplotfn='binomialplot.pdf',
+    crr=T, jarrowrudd=FALSE, titles=TRUE, specifyupdn=T,
+    up=1.06, dn=0.95, returnprice=FALSE, logy=FALSE)
+
+```
+
+
